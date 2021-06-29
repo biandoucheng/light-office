@@ -1,0 +1,25 @@
+<?php
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+Route::get('/', function () {
+    return view('welcome');
+});
+
+/*自定义路由*/
+Route::group(['prefix'=>"partner"],function () {
+    Route::get("export","PartnerController@export");
+});
+
+Route::group(['prefix'=>"report"],function () {
+    Route::get("export","ReportController@export");
+});
