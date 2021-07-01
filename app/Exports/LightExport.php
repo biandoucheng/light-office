@@ -11,12 +11,12 @@ namespace App\Exports;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
-use Iterator;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
 use Maatwebsite\Excel\Concerns\FromIterator;
-use App\Exports\Helper\ArrayHelper;
 use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
+use Iterator;
+use App\Exports\Helper\ArrayHelper;
 
 class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNullComparison
 {
@@ -59,6 +59,11 @@ class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNul
      * @var array 表头
      * */
     private $headers;
+
+    /*
+     * @var array 汇总行
+     * */
+    private $summary;
 
     /*
      * @var callable 回调,对数据集进行预处理
@@ -128,13 +133,14 @@ class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNul
      *@author biandou
      *@date 2021/6/29 14:23
      *@param array $rows 数据源
+     *@param mixed $params 其它参数
      *
      *@return array 处理后的数据
      */
-    public function prepareRows($rows)
+    public function prepareRows($rows,...$params)
     {
         if(is_callable($this->callBack)) {
-            $rows = ($this->callBack)($rows);
+            $rows = ($this->callBack)($rows,...$params);
         }
 
         return $rows;
