@@ -20,8 +20,6 @@ class ReportController extends Controller
     {
         #数据源
         $model   = new SaleReport();
-        $partner = new Partner();
-        $team    = new Partner();
 
         #表头
         $headers = [
@@ -36,8 +34,13 @@ class ReportController extends Controller
             "earn" => "收入",
         ];
 
-        #回调
-        $callBack = function (&$rows) use ($partner) {
+        return Excel::download(new LightExport($model,$headers,$this->callBack(),[true,false]),'report.xlsx');
+    }
+
+    public function callBack()
+    {
+        $partner = new Partner();
+        return function (&$rows,?bool $aa,?bool $bb) use ($partner) {
             $out = [];
             $partnerIds = [];
 
@@ -54,7 +57,5 @@ class ReportController extends Controller
 
             return $out;
         };
-
-        return Excel::download(new LightExport($model,$headers,$callBack),'report.xlsx');
     }
 }

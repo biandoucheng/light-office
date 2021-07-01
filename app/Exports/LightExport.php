@@ -70,6 +70,11 @@ class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNul
      * */
     private $callBack;
 
+    /*
+     * @var array 回调的额外参数
+     * */
+    private $params;
+
 
     /**
      *@description 构造方法初始化
@@ -77,10 +82,12 @@ class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNul
      *@author biandou
      *@date 2021/6/29 13:44
      *@param $source Collection,DB,stdClass,array
+     *@param array $headers 表头
+     *@param array $params 回调需要的额外参数
      */
-    public function __construct(&$source,array $headers,?callable $callBack)
+    public function __construct(&$source,array $headers,?callable $callBack,array $params=[])
     {
-        $this->load($source,$headers,$callBack);
+        $this->load($source,$headers,$callBack,$params);
     }
 
     /**
@@ -89,13 +96,16 @@ class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNul
      *@author biandou
      *@date 2021/6/29 12:00
      *@param $source Collection,DB,stdClass,array
+     *@param array $headers 表头
+     *@param array $params 回调需要的额外参数
      */
-    public function load(&$source,array $headers,?callable $callBack)
+    public function load(&$source,array $headers,?callable $callBack,array $params=[])
     {
         #加载数据源，表头，回调函数
         $this->source   = $source;
         $this->headers  = $headers;
         $this->callBack = $callBack;
+        $this->params   = $params;
 
         #数据类型检测
         if(is_array($source)) {
@@ -109,6 +119,56 @@ class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNul
         }else {
             $this->sourceType = self::SOURCE_TYPE_STD_CLASS;
         }
+    }
+
+    /**
+     *@description 重置数据源
+     *
+     *@author biandou
+     *@date 2021/7/1 9:49
+     *@param $source Collection,DB,stdClass,array
+     */
+    public function resetSource(&$source)
+    {
+        if($source) {
+            $this->source = $source;
+        }
+    }
+
+    /**
+     *@description 重置表头
+     *
+     *@author biandou
+     *@date 2021/7/1 9:50
+     *@param array $headers 表头
+     */
+    public function resetHeaders(array $headers)
+    {
+        $this->headers = $headers;
+    }
+
+    /**
+     *@description 重置回调
+     *
+     *@author biandou
+     *@date 2021/7/1 9:51
+     *@param callable $callBack 回调方法
+     */
+    public function resetCallBack(callable $callBack)
+    {
+        $this->callBack = $callBack;
+    }
+
+    /**
+     *@description 重置回调参数
+     *
+     *@author biandou
+     *@date 2021/7/1 9:52
+     *@param array $params 回调额外参数
+     */
+    public function resetCallBackParams(array $params)
+    {
+        $this->params = $params;
     }
 
     /**
@@ -133,14 +193,13 @@ class LightExport implements FromIterator,WithHeadings,WithMapping,WithStrictNul
      *@author biandou
      *@date 2021/6/29 14:23
      *@param array $rows 数据源
-     *@param mixed $params 其它参数
      *
      *@return array 处理后的数据
      */
-    public function prepareRows($rows,...$params)
+    public function prepareRows($rows)
     {
         if(is_callable($this->callBack)) {
-            $rows = ($this->callBack)($rows,...$params);
+            $rows = ($this->callBack)($rows,...$this->params);
         }
 
         return $rows;
