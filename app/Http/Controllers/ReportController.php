@@ -34,15 +34,15 @@ class ReportController extends Controller
             "earn" => "收入",
         ];
 
-        return Excel::download(new LightExport($model,$headers,$this->callBack(),[true,false]),'report.xlsx');
+        return Excel::download(new LightExport($model,$headers,[['call'=>$this->callBack(),'params'=>[true,false]]]),'report.xlsx');
     }
 
     public function callBack()
     {
         $partner = new Partner();
         return function (&$rows,?bool $aa,?bool $bb) use ($partner) {
-            $out = [];
             $partnerIds = [];
+            $out = [];
 
             foreach ($rows as $row) {
                 $partnerIds[] = $row['partner_id'];

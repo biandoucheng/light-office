@@ -6,7 +6,7 @@
  * Time: 23:59
  */
 
-namespace App\Exports\Helper;
+namespace LTOFFICE\Helper;
 
 
 class ArrayHelper
