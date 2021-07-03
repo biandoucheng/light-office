@@ -8,6 +8,9 @@
 namespace LTOFFICE\Helper;
 
 
+/*
+ * 属性处理助手
+ * */
 trait AttrHelper
 {
     /**

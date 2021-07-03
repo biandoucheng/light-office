@@ -9,6 +9,9 @@
 namespace LTOFFICE\Helper;
 
 
+/*
+ * 字符串处理助手
+ * */
 class StrHealper
 {
     /**

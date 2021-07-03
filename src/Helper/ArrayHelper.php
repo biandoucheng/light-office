@@ -9,6 +9,9 @@
 namespace LTOFFICE\Helper;
 
 
+/*
+ * 数组处理助手
+ * */
 class ArrayHelper
 {
     /**
