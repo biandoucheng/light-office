@@ -6,7 +6,7 @@
  * Time: 11:45
  */
 
-namespace LTOFFICE\Helper;
+namespace LTOFFICE\Help;
 
 
 /*

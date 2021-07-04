@@ -8,7 +8,7 @@
 
 namespace LTOFFICE;
 
-use LTOFFICE\Helper\AttrHelper;
+use LTOFFICE\Help\AttrHelper;
 
 /*
  * 作者

@@ -12,7 +12,7 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
-use LTOFFICE\Helper\ArrayHelper;
+use LTOFFICE\Help\ArrayHelper;
 
 /*
  * 迭代缓存器
@@ -113,6 +113,10 @@ class IteratorCache
             $this->sourceType = self::SOURCE_TYPE_DB;
         }else if($source instanceof Collection) {
             $this->sourceType = self::SOURCE_TYPE_COLLECTION;
+            $this->source = $this->source->toArray();
+            if(isset($this->source['data'])) {
+                $this->source = $this->source['data'];
+            }
         }else {
             $this->sourceType = self::SOURCE_TYPE_ARRAY;
             $this->source = (array)$this->source;

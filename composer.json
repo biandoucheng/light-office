@@ -11,7 +11,8 @@
     ],
     "homepage": "https://github.com/biandoucheng/light-office",
     "require": {
-        "php": "^7.0"
+        "php": "^7.0",
+        "phpoffice/phpspreadsheet": "^1.10"
     },
     "require-dev": {
         "phpunit/phpunit": "7.5"
