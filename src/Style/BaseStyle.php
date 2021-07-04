@@ -6,7 +6,7 @@
  * Time: 16:58
  */
 
-namespace LTOFFICE\Styles;
+namespace LTOFFICE\Style;
 
 
 /*
