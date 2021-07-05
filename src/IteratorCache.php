@@ -8,7 +8,6 @@
 
 namespace LTOFFICE;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
@@ -16,8 +15,9 @@ use LTOFFICE\Help\ArrayHelper;
 
 /*
  * 迭代缓存器
+ *
  * */
-class IteratorCache
+class CacheIterator
 {
     /*
  * @const 数据源类型 数组
