@@ -218,6 +218,32 @@ class Export
     }
 
     /**
+     *@description 保存到本地
+     *
+     *@author biandou
+     *@date 2021/7/5 18:14
+     *@param string $file 文件名
+     *
+     *@return bool
+     */
+    public function save (string $file = ""):bool
+    {
+        if(empty($file) || file_exists($file)) {
+            return false;
+        }
+
+        $dirName = dirname($file);
+        if(empty($dirName) || !directoryExists($dirName)) {
+            return false;
+        }
+
+        $writer = IOFactory::createWriter($this->spreadSheet,$this->type);
+        $writer->save($file);
+
+        return true;
+    }
+
+    /**
      *@description 获取临时文件
      *
      *@author biandou
