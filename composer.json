@@ -23,7 +23,7 @@
             "LTOFFICE\\": "src/"
         },
         "classmap": [
-            "src/Value"
+            "src/Help"
         ]
     },
     "autoload-dev": {
