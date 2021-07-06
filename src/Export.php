@@ -97,7 +97,8 @@ class Export
      */
     protected function getSuffix(string &$name):string
     {
-        $type = end(explode(".",$name));
+        $names = explode(".",$name);
+        $type = end($names);
         if(empty($type)) {
             $type = "csv";
             $name .= ".csv";
@@ -173,6 +174,27 @@ class Export
         }
 
         $this->spreadSheet->getActiveSheet();
+    }
+
+    /**
+     *@description 写入数据
+     *
+     *@author biandou
+     *@date 2021/7/5 19:20
+     *@param array $rows 数据行
+     */
+    public function setCellValue(array $rows)
+    {
+        $rowIndex = $this->spreadSheet->getActiveSheet()->getHighestRow();
+        foreach ($rows as $row) {
+            foreach ($row as $field=>$val) {
+                $column = $this->activeSheet->columns[$field];
+                $pos = $column.":$rowIndex";
+                $this->spreadSheet->getActiveSheet()
+                    ->setCellValue($pos,$val);
+            }
+            $rowIndex += 1;
+        }
     }
 
     /**

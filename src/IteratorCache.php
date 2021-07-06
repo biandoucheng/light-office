@@ -17,7 +17,7 @@ use LTOFFICE\Help\ArrayHelper;
  * 迭代缓存器
  *
  * */
-class CacheIterator
+class IteratorCache
 {
     /*
  * @const 数据源类型 数组
@@ -73,9 +73,10 @@ class CacheIterator
     /*
      * 初始化
      * */
-    public function __construct()
+    public function __construct(mixed $source,array $callArray = [],int $quantity=1000)
     {
         $this->reset();
+        $this->load($source,$callArray,$quantity);
     }
 
     /**
@@ -99,7 +100,7 @@ class CacheIterator
      *@param mixed $source 数据源
      *@param array $callArray 回调函数列表
      */
-    public function load(mixed $source,array $callArray,int $quantity=1000)
+    public function load(mixed $source,array $callArray = [],int $quantity=1000)
     {
         #设置数据源
         $this->source = $source;
@@ -181,10 +182,9 @@ class CacheIterator
             $index += 1;
             $out[] = $item;
             if($index >= $this->quantity || $index >= $length) {
-                $this->data = $out;
                 $out = [];
                 $index = 0;
-                yield true;
+                yield $out;
             }
         }
     }
@@ -219,9 +219,7 @@ class CacheIterator
                 #步长加一倍
                 $skip += $this->quantity;
 
-                $this->data = $items;
-
-                yield true;
+                yield $items;
             }
         }while($items);
     }
@@ -231,28 +229,14 @@ class CacheIterator
      *
      *@author biandou
      *@date 2021/7/3 16:22
+     *@param array $rows 数据
      */
-    public function runCallMembers()
+    public function runCallMembers(array &$rows)
     {
-        foreach ($this->data as &$da) {
+        foreach ($rows as &$row) {
             foreach ($this->callArray as $call) {
-                ($call['call'])($da,...$call['params']);
+                ($call['call'])($row,...$call['params']);
             }
-        }
-    }
-
-    /**
-     *@description 输出本段数据，并解除内存占用
-     *
-     *@author biandou
-     *@date 2021/7/3 16:18
-     *
-     *@return array
-     */
-    public function iteratorWrite():iterable
-    {
-        while ($this->data) {
-            yield array_shift($this->data);
         }
     }
 }

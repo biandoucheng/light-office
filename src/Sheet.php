@@ -8,7 +8,7 @@
 
 namespace LTOFFICE;
 
-use LTOFFICE\CacheIterator;
+use LTOFFICE\IteratorCache;
 use LTOFFICE\Help\AttrHelper;
 
 /*
@@ -26,17 +26,12 @@ class Sheet
     /*
      * @var bool 电子表是否是第一个展示
      * */
-    protected $first = false;
+    public $first = false;
 
     /*
      * @var mixed 电子表数据源
      * */
-    protected $source;
-
-    /*
-     * @var array 当前数据
-     * */
-    protected $rows;
+    protected $cache;
 
     /*
      * @var array 表头 [field=>zh]
@@ -46,7 +41,7 @@ class Sheet
     /*
      * @var bool 表头是否输出到报表中
      * */
-    protected $headerOut = true;
+    public $headerOut = true;
 
     /*
      * @var array 表头对应的列 eg:['name'=>'A']
@@ -61,12 +56,12 @@ class Sheet
     /*
      * @var array 数据列样式 [field=>Style]
      * */
-    protected $columnStyle = [];
+    public $columnStyle = [];
 
     /*
      * @var array 指定位置特殊值设置 ['field'=>'Total:','field'=>'=SUM(B2:B6)']
      * */
-    protected $specialVal = [];
+    public $specialVal = [];
 
     /*
      * @var array 汇总行
@@ -78,37 +73,19 @@ class Sheet
      * */
     protected $summaryPos = 'top';
 
-
     /**
-     * @return string
+     *@description 初始化
+     *
+     *@author biandou
+     *@date 2021/7/6 9:22
+     *@param mixed $source 数据源
+     *@param array $callArray 回调函数列表
+     *@param int $quantity 单次处理的数据条数
      */
-    public function getTitle(): string
+    public function __construct(mixed $source,array $callArray = [],int $quantity=1000)
     {
-        return $this->title;
-    }
-
-    /**
-     * @return bool
-     */
-    public function getFirst()
-    {
-        return $this->first;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getColumns()
-    {
-        return $this->columns;
-    }
-
-    /**
-     * @return array
-     */
-    public function getSummaryRow(): array
-    {
-        return $this->summaryRow;
+        $cache = new IteratorCache($source,$callArray,$quantity);
+        $this->cache = $cache;
     }
 
     /**
@@ -117,11 +94,11 @@ class Sheet
      *@author biandou
      *@date 2021/7/5 13:49
      *
-     *@return CacheIterator
+     *@return IteratorCache
      */
-    public function getSource():CacheIterator
+    public function getCache():IteratorCache
     {
-        return $this->source;
+        return $this->cache;
     }
 
     /**
