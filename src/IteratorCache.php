@@ -178,12 +178,11 @@ class IteratorCache
     {
         $index = 0;
         $out = [];
-        $length = count($this->source);
 
-        foreach ($this->source as $item) {
+        while ($this->source){
             $index += 1;
-            $out[] = $item;
-            if($index >= $this->quantity || $index >= $length) {
+            $out[] = array_shift($this->source);
+            if($index >= $this->quantity || empty($this->source)) {
                 $index = 0;
                 yield $out;
                 $out = [];
