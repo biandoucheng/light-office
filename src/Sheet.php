@@ -73,6 +73,11 @@ class Sheet
      * */
     protected $summaryPos = 'top';
 
+    /*
+     * @var int 数据行数,包含表头
+     * */
+    protected $rowIndex = 0;
+
     /**
      *@description 初始化
      *
@@ -82,7 +87,7 @@ class Sheet
      *@param array $callArray 回调函数列表
      *@param int $quantity 单次处理的数据条数
      */
-    public function __construct(mixed $source,array $callArray = [],int $quantity=1000)
+    public function __construct($source,array $callArray = [],int $quantity=1000)
     {
         $cache = new IteratorCache($source,$callArray,$quantity);
         $this->cache = $cache;
@@ -200,5 +205,30 @@ class Sheet
     public function isBottomSummary():bool
     {
         return $this->isSummaryEnable() && $this->summaryPos != 'top';
+    }
+
+    /**
+     *@description 数据行数+1
+     *
+     *@author biandou
+     *@date 2021/7/6 10:52
+     *@param
+     */
+    public function addRowIndex()
+    {
+        $this->rowIndex += 1;
+    }
+
+    /**
+     *@description 获取当前数据行数
+     *
+     *@author biandou
+     *@date 2021/7/6 10:53
+     *
+     *@return int
+     */
+    public function getRowIndex():int
+    {
+        return $this->rowIndex;
     }
 }

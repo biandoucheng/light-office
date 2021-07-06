@@ -11,7 +11,6 @@ namespace LTOFFICE;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use function PHPSTORM_META\elementType;
 use Symfony\Component\HttpFoundation\Response;
 
 /*
@@ -118,15 +117,15 @@ class Export
         }
     }
 
-   /**
-    *@description 电子表迭代器
-    *
-    *@author biandou
-    *@date 2021/7/5 13:56
-    *
-    *@return \Iterator
-    */
-    public function sheetIterator():\Iterator
+    /**
+     *@description 电子表迭代器
+     *
+     *@author biandou
+     *@date 2021/7/5 13:56
+     *
+     *@return iterable
+     */
+    public function sheetIterator():iterable
     {
         while ($this->sheets) {
             yield array_pop($this->sheets);
@@ -156,24 +155,24 @@ class Export
         $this->spreadSheet->addSheet($workSheet);
 
         #设置工作表为首页
-        if($sheet->getFirst()) {
+        if($sheet->first) {
             $this->spreadSheet->setActiveSheetIndex(0);
         }
 
         #填充表头
         if($sheet->isHeaderOutEnable()) {
-            foreach ($sheet->summaryRow as $field=>$value) {
+            foreach ($sheet->header as $field=>$zh) {
                 #获取表头位置
                 $column = $sheet->columns[$field];
-                $pos = $column.":1";
+                $pos = $column."1";
 
                 #填充表头
                 $this->spreadSheet->getActiveSheet()
-                    ->setCellValue($pos,$value);
+                    ->setCellValue($pos,$zh);
             }
+            #sheet数据记录+1
+            $this->activeSheet->addRowIndex();
         }
-
-        $this->spreadSheet->getActiveSheet();
     }
 
     /**
@@ -185,15 +184,16 @@ class Export
      */
     public function setCellValue(array $rows)
     {
-        $rowIndex = $this->spreadSheet->getActiveSheet()->getHighestRow();
+        $rowIndex = $this->activeSheet->getRowIndex() + 1;
         foreach ($rows as $row) {
             foreach ($row as $field=>$val) {
                 $column = $this->activeSheet->columns[$field];
-                $pos = $column.":$rowIndex";
+                $pos = $column."$rowIndex";
                 $this->spreadSheet->getActiveSheet()
                     ->setCellValue($pos,$val);
             }
             $rowIndex += 1;
+            $this->activeSheet->addRowIndex();
         }
     }
 
@@ -217,7 +217,7 @@ class Export
         #写入汇总行数据
         foreach ($this->activeSheet->summaryRow as $field=>$val) {
             $column = $this->activeSheet->columns[$field];
-            $pos = $column.":$row";
+            $pos = $column."$row";
             $this->spreadSheet->getActiveSheet()
                 ->setCellValue($pos,$val);
         }
@@ -255,7 +255,7 @@ class Export
         }
 
         $dirName = dirname($file);
-        if(empty($dirName) || !directoryExists($dirName)) {
+        if(empty($dirName) || !is_dir($dirName)) {
             return false;
         }
 

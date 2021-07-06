@@ -8,7 +8,8 @@
 
 namespace LTOFFICE;
 
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Query\Builder as QueryBuilder;
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Collection;
 use LTOFFICE\Help\ArrayHelper;
@@ -68,12 +69,12 @@ class IteratorCache
     /*
      * @var int 每次迭代数据最大条数
      * */
-    protected $quantity;
+    protected $quantity = 1000;
 
     /*
      * 初始化
      * */
-    public function __construct(mixed $source,array $callArray = [],int $quantity=1000)
+    public function __construct($source,array $callArray = [],int $quantity=1000)
     {
         $this->reset();
         $this->load($source,$callArray,$quantity);
@@ -100,7 +101,7 @@ class IteratorCache
      *@param mixed $source 数据源
      *@param array $callArray 回调函数列表
      */
-    public function load(mixed $source,array $callArray = [],int $quantity=1000)
+    public function load($source,array $callArray = [],int $quantity=1000)
     {
         #设置数据源
         $this->source = $source;
@@ -110,10 +111,10 @@ class IteratorCache
             $this->sourceType = self::SOURCE_TYPE_ARRAY;
         }else if($source instanceof Model) {
             $this->sourceType = self::SOURCE_TYPE_MODEL;
-        }else if($source instanceof DB) {
+        }else if($source instanceof QueryBuilder || $source instanceof EloquentBuilder || $source instanceof Model) {
             $this->sourceType = self::SOURCE_TYPE_DB;
         }else if($source instanceof Collection) {
-            $this->sourceType = self::SOURCE_TYPE_COLLECTION;
+            $this->sourceType = self::SOURCE_TYPE_ARRAY;
             $this->source = $this->source->toArray();
             if(isset($this->source['data'])) {
                 $this->source = $this->source['data'];
@@ -126,12 +127,13 @@ class IteratorCache
         #设置回调函数
         foreach ($callArray as $call) {
             if(is_callable($call['call'])) {
+                $call['params'] = $call['params'] ?? [];
                 $this->callArray[] = $call;
             }
         }
 
         #每次输出数据条数
-        if($quantity >= 100) {
+        if($quantity >= 0) {
             $this->quantity = $quantity;
         }
     }
@@ -182,9 +184,9 @@ class IteratorCache
             $index += 1;
             $out[] = $item;
             if($index >= $this->quantity || $index >= $length) {
-                $out = [];
                 $index = 0;
                 yield $out;
+                $out = [];
             }
         }
     }
@@ -205,7 +207,7 @@ class IteratorCache
             }
 
             #数据查询
-            $items = $this->source->skip($skip)->limit($this->quantity)->get();
+            $items = $this->source->limit($this->quantity)->offset($skip)->get()->toArray();
 
             #数据整理
             if($items) {
@@ -233,10 +235,8 @@ class IteratorCache
      */
     public function runCallMembers(array &$rows)
     {
-        foreach ($rows as &$row) {
-            foreach ($this->callArray as $call) {
-                ($call['call'])($row,...$call['params']);
-            }
+        foreach ($this->callArray as $call) {
+            ($call['call'])($rows,...$call['params']);
         }
     }
 }
