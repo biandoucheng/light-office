@@ -251,12 +251,12 @@ class Export
     public function save (string $file = ""):bool
     {
         if(empty($file) || file_exists($file)) {
-            return false;
+            throw new \Exception("目标文件已存在");
         }
 
         $dirName = dirname($file);
         if(empty($dirName) || !is_dir($dirName)) {
-            return false;
+            throw new \Exception("目标文件夹不存在");
         }
 
         $writer = IOFactory::createWriter($this->spreadSheet,$this->type);
