@@ -55,7 +55,7 @@ class Export
      *@date 2021/7/5 13:52
      *@param array $sheets Sheet数组
      */
-    public function __construct(array $sheets,array $property=[],string $name = 'download.csv')
+    public function __construct(array $sheets,string $name = 'download.csv',array $property=[])
     {
         #电子表
         $this->sheets = [];
