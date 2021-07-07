@@ -12,6 +12,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 /*
  * 导出类
@@ -234,9 +235,17 @@ class Export
     public function download()
     {
         $writer = IOFactory::createWriter($this->spreadSheet,$this->type);
-        $file   = $this->getTemporaryFilename($this->type);
-        $writer->save($file);
-        return response()->download($file)->deleteFileAfterSend();
+        $headers = [
+            "Content-Type" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Content-Disposition" => 'attachment;filename="'.$this->name.'"',
+            "Cache-Control" => "max-age=0"
+        ];
+
+        return StreamedResponse::create(
+            function () use (&$writer){$writer->save("php://output");},
+            200,
+            $headers
+        );
     }
 
     /**
