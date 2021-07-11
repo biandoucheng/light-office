@@ -141,7 +141,7 @@ class Sheet
      */
     public function mkColumns()
     {
-        $alphas = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","R","S","T","U","V","W","X","Y","Z"];
+        $alphas = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 
         $alphaNum = count($alphas);
         $index = 0;
