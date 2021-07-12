@@ -199,6 +199,19 @@ class Export
     }
 
     /**
+     *@description 获取当前电子表的行数
+     *
+     *@author biandou
+     *@date 2021/7/12 17:45
+     *
+     *@return int
+     */
+    public function getRowIndex():int
+    {
+        return $this->activeSheet->getRowIndex();
+    }
+
+    /**
      *@description 在sheet处理完毕后的操作
      *
      *@author biandou
