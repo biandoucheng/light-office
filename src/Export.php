@@ -199,6 +199,25 @@ class Export
     }
 
     /**
+     *@description 设置指定横坐标的值
+     *
+     *@author biandou
+     *@date 2021/7/12 17:57
+     *@param array $rows [['row'=>1,'val'=>[]]...]
+     */
+    public function setCellValueWithRowIndex(array $rows)
+    {
+        foreach ($rows as $row) {
+            foreach ($row['val'] as $field=>$val) {
+                $column = $this->activeSheet->columns[$field];
+                $pos = $column.$row['row'];
+                $this->spreadSheet->getActiveSheet()
+                    ->setCellValue($pos,$val);
+            }
+        }
+    }
+
+    /**
      *@description 获取当前电子表的行数
      *
      *@author biandou
