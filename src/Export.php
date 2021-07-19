@@ -188,6 +188,9 @@ class Export
         $rowIndex = $this->activeSheet->getRowIndex() + 1;
         foreach ($rows as $row) {
             foreach ($row as $field=>$val) {
+                if(!isset($this->activeSheet->columns[$field])) {
+                    continue;
+                }
                 $column = $this->activeSheet->columns[$field];
                 $pos = $column."$rowIndex";
                 $this->spreadSheet->getActiveSheet()
