@@ -11,6 +11,7 @@ namespace LTOFFICE;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\Writer\Csv;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -270,8 +271,13 @@ class Export
     public function download()
     {
         $writer = IOFactory::createWriter($this->spreadSheet,$this->type);
+
+        if ($writer instanceof Csv) {
+            $writer = $writer->setUseBOM(true);
+        }
+
         $headers = [
-            "Content-Type" => "application/vnd.ms-excel",
+            "Content-Type" => "application/vnd.ms-excel;charset=UTF-8",
             "Content-Disposition" => 'attachment;filename="'.$this->name.'"',
             "Cache-Control" => "max-age=0"
         ];
