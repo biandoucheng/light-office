@@ -271,7 +271,7 @@ class Export
     {
         $writer = IOFactory::createWriter($this->spreadSheet,$this->type);
         $headers = [
-            "Content-Type" => "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "Content-Type" => "application/vnd.ms-excel",
             "Content-Disposition" => 'attachment;filename="'.$this->name.'"',
             "Cache-Control" => "max-age=0"
         ];
