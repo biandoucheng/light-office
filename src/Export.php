@@ -276,9 +276,11 @@ class Export
             $writer = $writer->setUseBOM(true);
         }
 
+        $name = urlencode($this->name);
+
         $headers = [
             "Content-Type" => "application/vnd.ms-excel;charset=UTF-8",
-            "Content-Disposition" => 'attachment;filename="'.$this->name.'"',
+            "Content-Disposition" => 'attachment;filename="'.$name.'"',
             "Cache-Control" => "max-age=0"
         ];
 
