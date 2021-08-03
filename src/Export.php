@@ -213,10 +213,12 @@ class Export
     {
         foreach ($rows as $row) {
             foreach ($row['val'] as $field=>$val) {
-                $column = $this->activeSheet->columns[$field];
-                $pos = $column.$row['row'];
-                $this->spreadSheet->getActiveSheet()
-                    ->setCellValue($pos,$val);
+                $column = $this->activeSheet->columns[$field] ?? null;
+                if($column) {
+                    $pos = $column.$row['row'];
+                    $this->spreadSheet->getActiveSheet()
+                        ->setCellValue($pos,$val);
+                }
             }
         }
     }
