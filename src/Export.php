@@ -278,7 +278,12 @@ class Export
             $writer = $writer->setUseBOM(true);
         }
 
-        $name = urlencode($this->name);
+        #根据不同的浏览器决定是否对名称编码
+        $name = $this->name;
+        $ua = $_SERVER['HTTP_USER_AGENT'];
+        if(preg_match("/Chrome/i",$ua)) {
+            $name = urlencode($name);
+        }
 
         $headers = [
             "Content-Type" => "application/vnd.ms-excel;charset=UTF-8",
